@@ -1,6 +1,6 @@
 {
-  "name": "taskstarter",
-  "version": "1.0.6",
+  "name": "vsts-task-starter",
+  "version": "1.0.0",
   "description": "Creates a starting project structure for building a Node.js based Visual Studio Team Services task.",
   "main": "app.js",
   "scripts": {
@@ -14,7 +14,7 @@
     "url": "https://github.com/DarqueWarrior/vsts-task-starter/issues"
   },
   "bin": {
-    "taskstarter": "./bin/taskstarter"
+    "createtask": "./bin/taskstarter"
   },
   "keywords": [
     "Visual",
