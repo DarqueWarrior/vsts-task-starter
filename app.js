@@ -1,7 +1,9 @@
 var fs = require('fs');
 var os = require('os');
+var cli = require('cli');
 var path = require('path');
 var guid = require('guid');
+var deasync = require('deasync');
 var exec = require('child_process').exec;
 
 String.prototype.replaceAll = function (search, replacement) {
@@ -25,6 +27,20 @@ function ask(question, format, callback) {
             ask(question, format, callback);
         }
     });
+}
+
+function askSync(question, format) {
+    var result;
+
+    ask(question, format, function (value) {
+        result = value;
+    });
+
+    while (result === undefined) {
+        deasync.sleep(100);
+    }
+
+    return result;
 }
 
 function md(dir, folder) {
@@ -55,40 +71,90 @@ function copy(fileNames, templates, dest) {
 // Copy files
 var templates = path.join(__dirname, 'templates');
 
-ask('name', /.+/, function (taskName) {
-    ask('friendlyName', /.+/, function (friendlyName) {
-        ask('description', /.+/, function (description) {
-            ask('author', /.+/, function (author) {
+cli.parse({
+    taskname: ['n', 'Name of the task', 'string', null],
+    friendlyName: ['f', 'Friendly name of task', 'string', null],
+    description: ['d', 'Description of task', 'string', null],
+    author: ['a', 'Author of task', 'string', null],
+    guid: ['g', 'GUID for task', 'string', null],
+    skip: ['s', 'Skip installing dependencies', 'on', false]
+});
+
+cli.main(function (args, options) {
+
+    // Default to values passed in on the command line
+    var author = options.author;
+    var taskName = options.taskname;
+    var description = options.description;
+    var friendlyName = options.friendlyName;
+
+    // Ask for any values they did not pass in on the command line
+    if (taskName === null) {
+        taskName = askSync('name', /.+/);
+    }
+
+    if (friendlyName === null) {
+        friendlyName = askSync('friendlyName', /.+/);
+    }
+
+    if (description === null) {
+        description = askSync('description', /.+/);
+    }
+
+    if (author === null) {
+        author = askSync('author', /.+/);
+    }   
     
-                // Create folder structure
-                console.log('Creating folders');
-                var root = md(process.cwd(), taskName);
-                var src = md(root, 'src');
-                var test = md(root, 'test');
+    // Create folder structure
+    console.log('Creating folders');
+    var root = md(process.cwd(), taskName);
+    var src = md(root, 'src');
+    var test = md(root, 'test');
 
-                console.log('Adding files');
-                copy(['taskUnitTest.js'], templates, test);
-                copy(['app.js', 'task.js'], templates, src);
-                copy(['icon.png'], templates, root);
+    console.log('Adding files');
+    copy(['taskUnitTest.js'], templates, test);
+    copy(['app.js', 'task.js'], templates, src);
+    copy(['icon.png'], templates, root);
 
-                var contents = fs.readFileSync(path.join(templates, 'task.json'), 'utf8');
-                contents = contents.replaceAll('__guid__', guid.raw());
-                contents = contents.replaceAll('__taskname__', taskName);
-                contents = contents.replaceAll('__friendlyName__', friendlyName);
-                contents = contents.replaceAll('__description__', description);
-                contents = contents.replaceAll('__author__', author);
-                fs.writeFileSync(path.join(root, 'task.json'), contents);
+    var contents = fs.readFileSync(path.join(templates, 'task.json'), 'utf8');
+    contents = contents.replaceAll('__guid__', guid.raw());
+    contents = contents.replaceAll('__taskname__', taskName);
+    contents = contents.replaceAll('__friendlyName__', friendlyName);
+    contents = contents.replaceAll('__description__', description);
+    contents = contents.replaceAll('__author__', author);
+    fs.writeFileSync(path.join(root, 'task.json'), contents);
 
-                contents = fs.readFileSync(path.join(templates, 'package.json'), 'utf8');
-                contents = contents.replaceAll('__taskname__', taskName.toLowerCase());
-                contents = contents.replaceAll('__description__', description);
-                contents = contents.replaceAll('__author__', author);
-                fs.writeFileSync(path.join(root, 'package.json'), contents);
+    contents = fs.readFileSync(path.join(templates, 'package.json'), 'utf8');
+    contents = contents.replaceAll('__taskname__', taskName.toLowerCase());
+    contents = contents.replaceAll('__description__', description);
+    contents = contents.replaceAll('__author__', author);
+    fs.writeFileSync(path.join(root, 'package.json'), contents);
 
-                console.log('Installing node modules');
-                process.chdir(root);
-                console.log('Installing mocha');
-                exec('npm install -g mocha', function (error, stdout, stderr) {
+    if (options.skip) {
+        process.exit();
+    } else {
+        console.log('Installing node modules');
+        process.chdir(root);
+        console.log('Installing mocha');
+        exec('npm install -g mocha', function (error, stdout, stderr) {
+            console.log('stdout: ' + stdout);
+            if (stderr !== '') {
+                console.log('stderr: ' + stderr);
+            }
+            if (error !== null) {
+                console.log('exec error: ' + error);
+            }
+            console.log('Installing instanbul');
+            exec('npm install -g istanbul', function (error, stdout, stderr) {
+                console.log('stdout: ' + stdout);
+                if (stderr !== '') {
+                    console.log('stderr: ' + stderr);
+                }
+                if (error !== null) {
+                    console.log('exec error: ' + error);
+                }
+                console.log('Installing project dependencies');
+                exec('npm install', function (error, stdout, stderr) {
                     console.log('stdout: ' + stdout);
                     if (stderr !== '') {
                         console.log('stderr: ' + stderr);
@@ -96,30 +162,10 @@ ask('name', /.+/, function (taskName) {
                     if (error !== null) {
                         console.log('exec error: ' + error);
                     }
-                    console.log('Installing instanbul');
-                    exec('npm install -g istanbul', function (error, stdout, stderr) {
-                        console.log('stdout: ' + stdout);
-                        if (stderr !== '') {
-                            console.log('stderr: ' + stderr);
-                        }
-                        if (error !== null) {
-                            console.log('exec error: ' + error);
-                        }
-                        console.log('Installing project dependencies');
-                        exec('npm install', function (error, stdout, stderr) {
-                            console.log('stdout: ' + stdout);
-                            if (stderr !== '') {
-                                console.log('stderr: ' + stderr);
-                            }
-                            if (error !== null) {
-                                console.log('exec error: ' + error);
-                            }
 
-                            process.exit();
-                        })
-                    })
+                    process.exit();
                 })
             })
         })
-    })
-})
+    }
+});
