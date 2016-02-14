@@ -1,0 +1,37 @@
+{
+  "id": "__guid__",
+  "name": "__taskname__",
+  "friendlyName": "__friendlyName__",
+  "description": "__description__",
+  "author": "__author__",
+  "helpMarkDown": "Replace with markdown to show in help",
+  "category": "Utility",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "demands": [],
+  "version": {
+    "Major": "1",
+    "Minor": "0",
+    "Patch": "0"
+  },
+  "minimumAgentVersion": "1.83.0",
+  "instanceNameFormat": "__taskname__ $(message)",
+  "inputs": [
+    {
+      "name": "cwd",
+      "type": "filePath",
+      "label": "Working Directory",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Current working directory when __taskname__ is run."
+    }
+  ],
+  "execution": {
+    "Node": {
+      "target": "/src/app.js",
+      "argumentFormat": ""
+    }
+  }
+}
