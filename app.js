@@ -2,7 +2,7 @@ var fs = require('fs');
 var os = require('os');
 var cli = require('cli');
 var path = require('path');
-var guid = require('guid');
+var guid = require('node-uuid');
 var deasync = require('deasync');
 var exec = require('child_process').exec;
 
@@ -68,19 +68,20 @@ function copy(fileNames, templates, dest) {
     });
 }
 
-// Copy files
-var templates = path.join(__dirname, 'templates');
-
-cli.parse({
-    taskname: ['n', 'Name of the task', 'string', null],
-    friendlyName: ['f', 'Friendly name of task', 'string', null],
-    description: ['d', 'Description of task', 'string', null],
-    author: ['a', 'Author of task', 'string', null],
-    guid: ['g', 'GUID for task', 'string', null],
-    skip: ['s', 'Skip installing dependencies', 'on', false]
-});
-
-cli.main(function (args, options) {
+function main(args) {
+    console.log(args);
+    // Copy files
+    var templates = path.join(__dirname, 'templates');
+    
+    cli.setArgv(args);
+    var options = cli.parse({
+        taskname: ['n', 'Name of the task', 'string', null],
+        friendlyName: ['f', 'Friendly name of task', 'string', null],
+        description: ['d', 'Description of task', 'string', null],
+        author: ['a', 'Author of task', 'string', null],
+        guid: ['g', 'GUID for task', 'string', null],
+        skip: ['s', 'Skip installing dependencies', 'on', false]
+    });
 
     // Default to values passed in on the command line
     var author = options.author;
@@ -117,7 +118,7 @@ cli.main(function (args, options) {
     copy(['icon.png'], templates, root);
 
     var contents = fs.readFileSync(path.join(templates, 'task.json'), 'utf8');
-    contents = contents.replaceAll('__guid__', guid.raw());
+    contents = contents.replaceAll('__guid__', guid.v4());
     contents = contents.replaceAll('__taskname__', taskName);
     contents = contents.replaceAll('__friendlyName__', friendlyName);
     contents = contents.replaceAll('__description__', description);
@@ -129,7 +130,7 @@ cli.main(function (args, options) {
     contents = contents.replaceAll('__description__', description);
     contents = contents.replaceAll('__author__', author);
     fs.writeFileSync(path.join(root, 'package.json'), contents);
-
+    
     if (options.skip) {
         process.exit();
     } else {
@@ -167,5 +168,13 @@ cli.main(function (args, options) {
                 })
             })
         })
-    }
-});
+    }    
+};
+
+/*
+ * Exports the portions of the file we want to share with files that require 
+ * it.
+ */
+module.exports = {
+    main: main
+};
