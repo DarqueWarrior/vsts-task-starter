@@ -1,6 +1,6 @@
 {
   "name": "vsts-task-starter",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Creates a starting project structure for building a Node.js based Visual Studio Team Services task.",
   "main": "app.js",
   "scripts": {

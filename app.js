@@ -69,7 +69,6 @@ function copy(fileNames, templates, dest) {
 }
 
 function main(args) {
-    console.log(args);
     // Copy files
     var templates = path.join(__dirname, 'templates');
     

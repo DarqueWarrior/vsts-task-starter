@@ -1,4 +1,5 @@
 # vsts-task-starter
+
 Creates a starting project structure for building a Node.js based Visual Studio Team Services task.
 
 |-- taskName  
@@ -15,3 +16,21 @@ The command also installs Mocha and Istanbul globally for testing and code cover
 npm test  
 from the task folder.
 
+## Installation
+```bash
+sudo npm install -g vsts-task-starter
+```
+## Usage
+```bash
+createtask
+```
+## Command Line Interface (cli)
+Any values not passed in as cli arguments will be prompted for when the command runs.  
+* n - name of the task
+* f - friendly name of the task
+* d - description
+* a - author  
+
+```bash
+createtask -n TaskName -f "Task Name" -a "Donovan Brown" -d "My cool task"  
+```
