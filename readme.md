@@ -12,13 +12,14 @@ Creates a starting project structure for building a Node.js based Visual Studio 
 |&nbsp;&nbsp;&nbsp;&nbsp;|--test  
 |&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;|-- taskUnitTest.js  
 
-The command also installs Mocha and Istanbul globally for testing and code coverage.  Once the task is created you can test the task by running  
-npm test  
-from the task folder.
+The command also installs [Mocha](https://www.npmjs.com/package/mocha) and [Istanbul](https://www.npmjs.com/package/istanbul) globally for testing and code coverage.  Once the task is created you can test the task by running test from the task folder.
+```bash  
+npm test
+```  
 
 ## Installation
 ```bash
-sudo npm install -g vsts-task-starter
+npm install -g vsts-task-starter
 ```
 ## Usage
 ```bash

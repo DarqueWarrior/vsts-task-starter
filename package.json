@@ -1,7 +1,15 @@
 {
   "name": "vsts-task-starter",
-  "version": "1.0.1",
+  "version": "1.0.2",
+  "homepage": "https://github.com/DarqueWarrior/vsts-task-starter#readme",
   "description": "Creates a starting project structure for building a Node.js based Visual Studio Team Services task.",
+  
+  "author": {
+    "name": "Donovan Brown",
+    "url": "http://DonovanBrown.com"
+  },
+  
+  
   "main": "app.js",
   "scripts": {
     "test": "istanbul cover node_modules\\\\mocha\\\\bin\\\\_mocha -- -R list"
@@ -14,7 +22,7 @@
     "url": "https://github.com/DarqueWarrior/vsts-task-starter/issues"
   },
   "bin": {
-    "createtask": "./bin/taskstarter"
+    "createtask": "./bin/createtask"
   },
   "keywords": [
     "Visual",
@@ -25,12 +33,15 @@
     "task",
     "agent"
   ],
-  "author": {
-    "name": "Donovan Brown",
-    "url": "http://DonovanBrown.com"
-  },
+  
   "license": "MIT",
-  "homepage": "https://github.com/DarqueWarrior/vsts-task-starter#readme",
+  "preferGlobal": true,
+  "files": [
+      "bin",
+      "src",
+      "templates"
+  ],
+  
   "dependencies": {
     "cli": "^0.11.1",
     "deasync": "^0.1.4",

@@ -1,72 +1,9 @@
 var fs = require('fs');
-var os = require('os');
 var cli = require('cli');
 var path = require('path');
 var guid = require('node-uuid');
-var deasync = require('deasync');
+var util = require('./utility.js');
 var exec = require('child_process').exec;
-
-String.prototype.replaceAll = function (search, replacement) {
-    var target = this;
-    return target.split(search).join(replacement);
-};
-
-function ask(question, format, callback) {
-    var stdin = process.stdin, stdout = process.stdout;
-
-    stdin.resume();
-    stdout.write(question + ': ');
-
-    stdin.once('data', function (data) {
-        data = data.toString().trim();
-
-        if (format.test(data)) {
-            callback(data);
-        } else {
-            stdout.write('It should match: ' + format + '\n');
-            ask(question, format, callback);
-        }
-    });
-}
-
-function askSync(question, format) {
-    var result;
-
-    ask(question, format, function (value) {
-        result = value;
-    });
-
-    while (result === undefined) {
-        deasync.sleep(100);
-    }
-
-    return result;
-}
-
-function md(dir, folder) {
-    'use strict';
-
-    var folderPath = path.join(dir, folder);
-
-    if (!fs.existsSync(folderPath)) {
-        fs.mkdirSync(folderPath);
-    }
-
-    return folderPath;
-}
-
-/*
-* fileNames is an array of file names to copy from templates to dest
- */
-function copy(fileNames, templates, dest) {
-
-    fileNames.forEach(function (fileName) {
-        var fileTemp = path.join(templates, fileName);
-        var fileDest = path.join(dest, fileName);
-
-        fs.writeFileSync(fileDest, fs.readFileSync(fileTemp));
-    });
-}
 
 function main(args) {
     // Copy files
@@ -90,31 +27,31 @@ function main(args) {
 
     // Ask for any values they did not pass in on the command line
     if (taskName === null) {
-        taskName = askSync('name', /.+/);
+        taskName = util.askSync('name', /.+/);
     }
 
     if (friendlyName === null) {
-        friendlyName = askSync('friendlyName', /.+/);
+        friendlyName = util.askSync('friendlyName', /.+/);
     }
 
     if (description === null) {
-        description = askSync('description', /.+/);
+        description = util.askSync('description', /.+/);
     }
 
     if (author === null) {
-        author = askSync('author', /.+/);
+        author = util.askSync('author', /.+/);
     }   
     
     // Create folder structure
     console.log('Creating folders');
-    var root = md(process.cwd(), taskName);
-    var src = md(root, 'src');
-    var test = md(root, 'test');
+    var root = util.md(process.cwd(), taskName);
+    var src = util.md(root, 'src');
+    var test = util.md(root, 'test');
 
     console.log('Adding files');
-    copy(['taskUnitTest.js'], templates, test);
-    copy(['app.js', 'task.js'], templates, src);
-    copy(['icon.png'], templates, root);
+    util.copy(['taskUnitTest.js'], templates, test);
+    util.copy(['app.js', 'task.js'], templates, src);
+    util.copy(['icon.png'], templates, root);
 
     var contents = fs.readFileSync(path.join(templates, 'task.json'), 'utf8');
     contents = contents.replaceAll('__guid__', guid.v4());
@@ -138,7 +75,7 @@ function main(args) {
         console.log('Installing mocha');
         exec('npm install -g mocha', function (error, stdout, stderr) {
             console.log('stdout: ' + stdout);
-            if (stderr !== '') {
+            if (stderr) {
                 console.log('stderr: ' + stderr);
             }
             if (error !== null) {
@@ -147,7 +84,7 @@ function main(args) {
             console.log('Installing instanbul');
             exec('npm install -g istanbul', function (error, stdout, stderr) {
                 console.log('stdout: ' + stdout);
-                if (stderr !== '') {
+                if (stderr) {
                     console.log('stderr: ' + stderr);
                 }
                 if (error !== null) {
@@ -156,7 +93,7 @@ function main(args) {
                 console.log('Installing project dependencies');
                 exec('npm install', function (error, stdout, stderr) {
                     console.log('stdout: ' + stdout);
-                    if (stderr !== '') {
+                    if (stderr) {
                         console.log('stderr: ' + stderr);
                     }
                     if (error !== null) {
