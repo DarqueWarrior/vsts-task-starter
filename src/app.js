@@ -6,8 +6,13 @@ var util = require('./utility.js');
 var exec = require('child_process').exec;
 
 function main(args) {
+    var packageContents = fs.readFileSync(path.join(__dirname, '../package.json'), 'utf8');
+    var packageJson = JSON.parse(packageContents);
+    
+    console.log('vsts-task-starter by @DonovaBrown v' + packageJson.version);
+    
     // Copy files
-    var templates = path.join(__dirname, 'templates');
+    var templates = path.join(__dirname, '../templates');
     
     cli.setArgv(args);
     var options = cli.parse({

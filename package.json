@@ -1,6 +1,6 @@
 {
   "name": "vsts-task-starter",
-  "version": "1.0.2",
+  "version": "1.0.5",
   "homepage": "https://github.com/DarqueWarrior/vsts-task-starter#readme",
   "description": "Creates a starting project structure for building a Node.js based Visual Studio Team Services task.",
   
@@ -10,7 +10,7 @@
   },
   
   
-  "main": "app.js",
+  "main": "./src/app.js",
   "scripts": {
     "test": "istanbul cover node_modules\\\\mocha\\\\bin\\\\_mocha -- -R list"
   },
