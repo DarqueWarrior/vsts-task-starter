@@ -1,29 +1,23 @@
 {
-  "name": "__taskname__",
-  "version": "1.0.0",
-  "description": "__description__",
-  "main": "./src/app.js",
-  "directories": {
-    "test": "test"
-  },
-  "scripts": {
-    "test": "istanbul cover node_modules\\\\mocha\\\\bin\\\\_mocha -- -R list"
-  },
-  "repository": {
-      
-  },
-  "keywords": [
-    "Azure",
-    "Key",
-    "Vault"
-  ],
-  "author": "__author__",
-  "license": "MIT",
-  "devDependencies": {
-    "mocha": "^2.4.5",
-    "sinon": "^1.17.3"
-  },
-  "dependencies": {
-    "vso-task-lib": "^0.5.5"
-  }
+   "name": "__taskname__",
+   "version": "1.0.0",
+   "description": "__description__",
+   "main": "./src/app.js",
+   "directories": {
+      "src": "src"
+   },
+   "scripts": {
+      "test": "istanbul cover node_modules/mocha/bin/_mocha -- -R list"
+   },
+   "repository": {},
+   "keywords": [],
+   "author": "__author__",
+   "license": "MIT",
+   "devDependencies": {
+      "mocha": "^2.4.5",
+      "sinon": "^1.17.3"
+   },
+   "dependencies": {
+      "vso-task-lib": "^0.5.5"
+   }
 }
