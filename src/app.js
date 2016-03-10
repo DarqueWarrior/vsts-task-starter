@@ -14,6 +14,7 @@ function main(args) {
     // Copy files
     var templates = path.join(__dirname, '../templates');
     
+    // Setup CLI
     cli.setArgv(args);
     var options = cli.parse({
         taskname: ['n', 'Name of the task', 'string', null],
@@ -49,6 +50,25 @@ function main(args) {
     
     // Create folder structure
     console.log('Creating folders');
+    var allFiles = util.find(templates);
+    
+    allFiles.forEach(function(file, index){
+       var info = path.parse(file);
+       var stat = fs.lstatSync(file);
+       
+       if(index === 0) {
+          // Skip the first entry.
+          return;
+       }
+       
+       if(stat.isDirectory()) {
+          console.log(info.name);
+       }
+       else {
+          console.log(info.base);
+          console.log(info.dir);
+       }
+    });
     var root = util.md(process.cwd(), taskName);
     var src = util.md(root, 'src');
     var test = util.md(root, 'test');
