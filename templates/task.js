@@ -2,7 +2,7 @@
  * The purpose of this task is to run.
  */
 var path = require('path');
-var tl = require('vso-task-lib');
+var tl = require('vsts-task-lib');
 
 /*
  * The entry point for the task. 

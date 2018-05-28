@@ -14,10 +14,10 @@
    "author": "__author__",
    "license": "MIT",
    "devDependencies": {
-      "mocha": "^2.4.5",
-      "sinon": "^1.17.3"
+      "mocha": "^5.2.0",
+      "sinon": "^5.0.10"
    },
    "dependencies": {
-      "vso-task-lib": "^0.5.5"
+      "vsts-task-lib": "^2.4.0"
    }
 }
