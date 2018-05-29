@@ -7,7 +7,7 @@
       "src": "src"
    },
    "scripts": {
-      "test": "istanbul cover node_modules/mocha/bin/_mocha -- -R list"
+      "test": "node node_modules/istanbul/lib/cli.js cover --report cobertura --report lcov node_modules/mocha/bin/_mocha -- -R list"
    },
    "repository": {},
    "keywords": [],
@@ -15,7 +15,8 @@
    "license": "MIT",
    "devDependencies": {
       "mocha": "^5.2.0",
-      "sinon": "^5.0.10"
+      "sinon": "^5.0.10",
+      "istanbul": "^0.4.5"
    },
    "dependencies": {
       "vsts-task-lib": "^2.4.0"
